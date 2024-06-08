@@ -38,6 +38,7 @@ kernel: boot
 boot:
 	$(AS) $(SRC_DIR)/$(AS_FILES) -o $(OBJ_DIR)/$(OB_FILES)
     
+.PHONY:	validate
 validate:
 	@#check if the kernel bin is multiboot compatible
 ifneq (0, $(shell if grub-file --is-x86-multiboot $(KERNEL_BIN_NAME); then echo 0; else echo 1; fi))
