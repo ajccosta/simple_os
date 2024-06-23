@@ -85,6 +85,31 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
  
 void terminal_putchar(char c) 
 {
+    if(c == '\n') {
+        //Newline: reset col and advance row
+		terminal_column = 0;
+		if (++terminal_row == VGA_HEIGHT)
+			terminal_row = 0;
+        return;
+    }
+
+    if(c == '\t') {
+        //Tab: advance col by 4 and advance row if necessary
+        terminal_column += 4;
+	    if (terminal_column >= VGA_WIDTH) {
+		    if (++terminal_row == VGA_HEIGHT)
+		    	terminal_row = 0;
+        }
+        return;
+    }
+
+    if(c == '\r') {
+        //Carriage return: simply reset col
+        terminal_column = 0;
+        return;
+    }
+
+    //No special characters, simply add new char to terminal
 	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
 	if (++terminal_column == VGA_WIDTH) {
 		terminal_column = 0;
@@ -109,6 +134,6 @@ void kernel_main(void)
 	/* Initialize terminal interface */
 	terminal_initialize();
  
-	/* Newline support is left as an exercise. */
-	terminal_writestring("Hello, kernel World!\n");
+    char *huge_string = "Hello, kernel World!\nHello,\tkernel World!\nHello, kernel World!\rHalow";
+	terminal_writestring(huge_string);
 }
